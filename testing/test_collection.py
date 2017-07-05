@@ -286,6 +286,11 @@ class TestCustomConftests(object):
         assert result.ret == 0
         assert "passed" in result.stdout.str()
 
+    def test_ignore_collect_virtualenv(self, testdir, monkeypatch):
+        monkeypatch.setenv('VIRTUAL_ENV', testdir.tmpdir)
+        res = testdir.runpytest()
+        assert 1 == 0
+
     def test_pytest_fs_collect_hooks_are_seen(self, testdir):
         testdir.makeconftest("""
             import pytest

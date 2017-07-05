@@ -174,8 +174,13 @@ def pytest_ignore_collect(path, config):
     if excludeopt:
         ignore_paths.extend([py.path.local(x) for x in excludeopt])
 
-    if py.path.local(path) in ignore_paths:
+    local_path = py.path.local(path)
+    if local_path in ignore_paths:
         return True
+    if os.getenv('VIRTUAL_ENV'):
+        venv_path = py.path.local(os.getenv('VIRTUAL_ENV'))
+        if local_path == venv_path:
+            raise ValueError("Warning! You have virtualenv directory inside your working directory")
 
     # Skip duplicate paths.
     keepduplicates = config.getoption("keepduplicates")
